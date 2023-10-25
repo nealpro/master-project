@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+"""
+This code belongs to Team 3 of FSE100 class of Fall 2023.
+"""
 
 import RPi.GPIO as GPIO
 import time
