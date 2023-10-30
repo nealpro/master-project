@@ -6,24 +6,27 @@ import RPi.GPIO as GPIO
 import time
 
 # Ultrasonic sensor pins
-TRIG = 11
-ECHO = 12
+TRIG: int = 11
+ECHO: int = 12
 
 # Buzzer pin
-Buzzer = 35  # TODO: Change this based on current setup
+BUZZER: int = 35  # TODO: Change this based on current setup
 
 # Set up the GPIO pins for the ultrasonic sensor and the buzzer
 def setup():
+    """
+    Setup pins for the ultrasonic sensor and the buzzer.
+    """
+    global Buzz  # Define Buzz as a global variable
     GPIO.setmode(GPIO.BOARD)
-    
+
     # Ultrasonic sensor setup
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
-    
+
     # Buzzer setup
-    GPIO.setup(Buzzer, GPIO.OUT)
-    global Buzz
-    Buzz = GPIO.PWM(Buzzer, 440)
+    GPIO.setup(BUZZER, GPIO.OUT)
+    Buzz = GPIO.PWM(BUZZER, 440)
     Buzz.start(50)
 
 def distance():
@@ -46,6 +49,7 @@ def distance():
     return during * 340 / 2 * 100
 
 def loop():
+    """Main loop"""
     while True:
         dis = distance()
         print(dis, 'cm')
@@ -64,8 +68,8 @@ def loop():
         else:
             time.sleep(0.3)
 
-# Cleanup the GPIO pins on exit
 def destroy():
+    """Destroy the GPIO pins on exit."""
     Buzz.stop()
     GPIO.cleanup()
 
