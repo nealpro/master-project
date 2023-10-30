@@ -24,7 +24,7 @@ sensor.integration_time = 50
 sensor.gain = 4
 
 # Define the motor state
-motor_state = False
+MOTOR_STATE = False
 
 # Set up the GPIO pins for the ultrasonic sensor, the buzzer, and the vibration motor
 def setup():
@@ -32,7 +32,7 @@ def setup():
     Setup pins for the ultrasonic sensor, the buzzer, and the vibration motor.
     """
     global Buzz  # Define Buzz as a global variable
-    GPIO.setmode(GPIO.BOARD)
+    # GPIO.setmode(GPIO.BOARD)
 
     # Ultrasonic sensor setup
     GPIO.setup(TRIG, GPIO.OUT)
@@ -69,18 +69,18 @@ def detect_red():
     """
     Detect if the color sensed is red and activate the vibration motor.
     """
-    global motor_state
+    global MOTOR_STATE
     color_rgb = sensor.color_rgb_bytes
     print(f"RGB color: {color_rgb}")
     # A simple check for red color dominance
     if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
-        if not motor_state:
+        if not MOTOR_STATE:
             GPIO.output(VIB_MOTOR, GPIO.HIGH)  # Turn on vibration motor
-            motor_state = True
+            MOTOR_STATE = True
     else:
-        if motor_state:
+        if MOTOR_STATE:
             GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
-            motor_state = False
+            MOTOR_STATE = False
 
 def loop():
     """Main loop"""
