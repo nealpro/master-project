@@ -47,7 +47,23 @@ def setup():
     GPIO.setup(VIB_MOTOR, GPIO.OUT)
 
 def distance():
-    # [The same code for distance measurement goes here...]
+    GPIO.output(TRIG, 0)
+    time.sleep(0.000002)
+
+    GPIO.output(TRIG, 1)
+    time.sleep(0.00001)
+    GPIO.output(TRIG, 0)
+
+    while GPIO.input(ECHO) == 0:
+        pass
+    time1 = time.time()
+    
+    while GPIO.input(ECHO) == 1:
+        pass
+    time2 = time.time()
+
+    during = time2 - time1
+    return during * 340 / 2 * 100
 
 def detect_red():
     """
