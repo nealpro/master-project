@@ -27,7 +27,7 @@ MOTOR_STATE = False
 # Set up the GPIO pins for the ultrasonic sensor, the buzzer, and the vibration motor
 def setup():
     global Buzz  # Define Buzz as a global variable
-    global Vib
+    # global Vib
     GPIO.cleanup() # As long as there are no other scripts running, this line can be run.
     # GPIO.setmode(GPIO.BOARD)
 
@@ -42,8 +42,8 @@ def setup():
 
     # Vibration motor setup
     GPIO.setup(VIB_MOTOR, GPIO.OUT)
-    Vib = GPIO.PWM(VIB_MOTOR, 50) # This function is used to create a PWM instance.
-    Vib.start(50)
+    # Vib = GPIO.PWM(VIB_MOTOR, 50) # This function is used to create a PWM instance.
+    # Vib.start(50)
 
 def distance():
     print("Measuring distance...")
@@ -82,13 +82,13 @@ def detect_red():
     # A simple check for red color dominance
     if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
         if not MOTOR_STATE:
-            # GPIO.output(VIB_MOTOR, GPIO.HIGH) # Turn on vibration motor
-            Vib.start(50)
+            GPIO.output(VIB_MOTOR, GPIO.HIGH) # Turn on vibration motor
+            # Vib.start(50)
             MOTOR_STATE = True
     else:
         if MOTOR_STATE:
-            # GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
-            Vib.stop()
+            GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
+            # Vib.stop()
             MOTOR_STATE = False
 
 def loop():
@@ -115,7 +115,7 @@ def loop():
         time.sleep(1)  # Delay to prevent overwhelming the RGB sensor
 
 def destroy():
-    Vib.stop()
+    # Vib.stop()
     Buzz.stop()
     GPIO.cleanup()
 
