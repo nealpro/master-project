@@ -1,6 +1,4 @@
-"""
-This code belongs to Team 3 of FSE100 class of Fall 2023.
-"""
+# This code belongs to Team 3 of FSE100 class of Fall 2023.
 
 import RPi.GPIO as GPIO
 import time
@@ -8,14 +6,14 @@ import board
 import adafruit_tcs34725
 
 # Ultrasonic sensor pins
-TRIG: int = 11
-ECHO: int = 12
+TRIG = 11
+ECHO = 12
 
 # Buzzer pin
-BUZZER: int = 35
+BUZZER = 35
 
 # Vibration motor pin
-VIB_MOTOR: int = 37  # GPIO 26
+VIB_MOTOR = 37  # GPIO 26
 
 # RGB sensor setup
 i2c = board.I2C()
@@ -28,12 +26,9 @@ MOTOR_STATE = False
 
 # Set up the GPIO pins for the ultrasonic sensor, the buzzer, and the vibration motor
 def setup():
-    """
-    Setup pins for the ultrasonic sensor, the buzzer, and the vibration motor.
-    """
     global Buzz  # Define Buzz as a global variable
     GPIO.cleanup() # As long as there are no other scripts running, this line can be run.
-    GPIO.setmode(GPIO.BOARD)
+    # GPIO.setmode(GPIO.BOARD)
 
     # Ultrasonic sensor setup
     GPIO.setup(TRIG, GPIO.OUT)
@@ -44,7 +39,7 @@ def setup():
     Buzz = GPIO.PWM(BUZZER, 440)
     Buzz.start(50)
 
-    # Vibration motor setup
+    # Vibration motor setup 
     GPIO.setup(VIB_MOTOR, GPIO.OUT)
 
 def distance():
@@ -68,9 +63,6 @@ def distance():
     return during * 340 / 2 * 100
 
 def detect_red():
-    """
-    Detect if the color sensed is red and activate the vibration motor.
-    """
     global MOTOR_STATE
     color_rgb = sensor.color_rgb_bytes
     print(f"RGB color: {color_rgb}")
@@ -85,7 +77,6 @@ def detect_red():
             MOTOR_STATE = False
 
 def loop():
-    """Main loop"""
     while True:
         dis = distance()
         print(dis, 'cm')
@@ -109,7 +100,6 @@ def loop():
         time.sleep(1)  # Delay to prevent overwhelming the RGB sensor
 
 def destroy():
-    """Destroy the GPIO pins on exit."""
     Buzz.stop()
     GPIO.cleanup()
 
