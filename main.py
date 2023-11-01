@@ -32,7 +32,8 @@ def setup():
     Setup pins for the ultrasonic sensor, the buzzer, and the vibration motor.
     """
     global Buzz  # Define Buzz as a global variable
-    # GPIO.setmode(GPIO.BOARD)
+    GPIO.cleanup() # As long as there are no other scripts running, this line can be run.
+    GPIO.setmode(GPIO.BOARD)
 
     # Ultrasonic sensor setup
     GPIO.setup(TRIG, GPIO.OUT)
@@ -47,6 +48,7 @@ def setup():
     GPIO.setup(VIB_MOTOR, GPIO.OUT)
 
 def distance():
+    print("Measuring distance...")
     GPIO.output(TRIG, 0)
     time.sleep(0.000002)
 
