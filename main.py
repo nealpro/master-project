@@ -81,10 +81,12 @@ def detect_red():
         if not MOTOR_STATE:
             GPIO.output(VIB_MOTOR, GPIO.HIGH)  # Turn on vibration motor
             MOTOR_STATE = True
+            print(f"Red detected! Motor state is now {MOTOR_STATE}")
     else:
         if MOTOR_STATE:
             GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
             MOTOR_STATE = False
+            print(f"Red no longer detected! Motor state is now {MOTOR_STATE}")
 
 def loop():
     while True:
