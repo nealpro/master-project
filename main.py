@@ -44,24 +44,33 @@ def setup():
 
 def distance():
     print("Measuring distance...")
-    GPIO.output(TRIG, 0)
+    GPIO.output(TRIG, False)
     time.sleep(0.000002)
 
-    GPIO.output(TRIG, 1)
+    GPIO.output(TRIG, True)
     time.sleep(0.00001)
-    GPIO.output(TRIG, 0)
+    GPIO.output(TRIG, False)
 
+    pulse_start = time.time()
     while GPIO.input(ECHO) == 0:
-        pass
-    time1 = time.time()
-    
-    while GPIO.input(ECHO) == 1:
-        pass
-    time2 = time.time()
+        pulse_start = time.time()
+        if time.time() - pulse_start > 0.01:  # Just to prevent an infinite loop
+            print("Echo pulse not received - start")
+            return -1
 
-    during = time2 - time1
-    print("Measured: ", during * 340 / 2 * 100)
-    return during * 340 / 2 * 100
+    pulse_end = time.time()
+    while GPIO.input(ECHO) == 1:
+        pulse_end = time.time()
+        if time.time() - pulse_end > 0.01:  # Just to prevent an infinite loop
+            print("Echo pulse not received - end")
+            return -1
+
+    pulse_duration = pulse_end - pulse_start
+    distance = pulse_duration * 17150  # Speed of sound at sea level is 34300 cm/s
+    distance = round(distance, 2)
+    print("Measured distance: ", distance, "cm")
+    return distance
+
 
 def detect_red():
     global MOTOR_STATE
