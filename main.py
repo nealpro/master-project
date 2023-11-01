@@ -88,22 +88,22 @@ def detect_red():
 
 def loop():
     while True:
-        dis = distance()
-        print(dis, 'cm')
-        Buzz.stop()
-        # Changing frequencies
-        d = 0
-        # Activate buzzer when distance is less than 200 cm (2 meters)
-        if dis < 200:
-            Buzz.start(75)
-            if (d % 2) == 0:
-                Buzz.ChangeFrequency(600)
-            else:
-                Buzz.ChangeFrequency(500)
-            time.sleep(0.5)
-            d+=1
-        else:
-            time.sleep(0.3)
+        # dis = distance()
+        # print(dis, 'cm')
+        # Buzz.stop()
+        # # Changing frequencies
+        # d = 0
+        # # Activate buzzer when distance is less than 200 cm (2 meters)
+        # if dis < 200:
+        #     Buzz.start(75)
+        #     if (d % 2) == 0:
+        #         Buzz.ChangeFrequency(600)
+        #     else:
+        #         Buzz.ChangeFrequency(500)
+        #     time.sleep(0.5)
+        #     d+=1
+        # else:
+        #     time.sleep(0.3)
         
         # Check for the color red
         detect_red()
