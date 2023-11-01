@@ -39,7 +39,7 @@ def setup():
     Buzz = GPIO.PWM(BUZZER, 440)
     Buzz.start(50)
 
-    # Vibration motor setup 
+    # Vibration motor setup
     GPIO.setup(VIB_MOTOR, GPIO.OUT)
 
 def distance():
@@ -60,6 +60,7 @@ def distance():
     time2 = time.time()
 
     during = time2 - time1
+    print("Measured: ", during * 340 / 2 * 100)
     return during * 340 / 2 * 100
 
 def detect_red():
