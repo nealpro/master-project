@@ -3,7 +3,9 @@ import threading
 import board
 import adafruit_tcs34725
 import digitalio
-import pulseio
+import pigpio
+
+pi = pigpio.pi()
 
 # Pins configuration
 ULTRASONIC_1_TRIG = board.D17
@@ -12,7 +14,7 @@ ULTRASONIC_2_TRIG = board.D16
 ULTRASONIC_2_ECHO = board.D20
 RELAY_1 = board.D19
 RELAY_2 = board.D26
-BUZZER = board.D21
+BUZZER = 40
 
 # RGB sensor setup
 i2c = board.I2C()
@@ -40,7 +42,8 @@ relay_2 = digitalio.DigitalInOut(RELAY_2)
 relay_2.direction = digitalio.Direction.OUTPUT
 
 # PWM setup for buzzer
-buzzer = pulseio.PWMOut(BUZZER, duty_cycle=0, frequency=440)
+pi.set_mode(BUZZER, pigpio.OUTPUT)
+pi.hardware_PWM(BUZZER, 440, 500000)
 
 def distance(trig, echo):
     trig.value = True
