@@ -1,19 +1,17 @@
-# This code belongs to Team 3 of FSE100 class of Fall 2023.
-
 import RPi.GPIO as GPIO
 import time
+import threading
 import board
 import adafruit_tcs34725
 
-# Ultrasonic sensor pins
-TRIG = 11
-ECHO = 12
-
-# Buzzer pin
-BUZZER = 35
-
-# Vibration motor pin
-# VIB_MOTOR = 37  # GPIO 26
+# Pins configuration
+ULTRASONIC_1_TRIG = 11
+ULTRASONIC_1_ECHO = 12
+ULTRASONIC_2_TRIG = 13
+ULTRASONIC_2_ECHO = 15
+RELAY_1 = 16
+RELAY_2 = 18
+BUZZER = 22
 
 # RGB sensor setup
 i2c = board.I2C()
@@ -21,109 +19,88 @@ sensor = adafruit_tcs34725.TCS34725(i2c)
 sensor.integration_time = 50
 sensor.gain = 4
 
-# Define the motor state
-MOTOR_STATE = False
+# GPIO setup
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(ULTRASONIC_1_TRIG, GPIO.OUT)
+GPIO.setup(ULTRASONIC_1_ECHO, GPIO.IN)
+GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
+GPIO.setup(ULTRASONIC_2_ECHO, GPIO.IN)
+GPIO.setup(RELAY_1, GPIO.OUT)
+GPIO.setup(RELAY_2, GPIO.OUT)
+GPIO.setup(BUZZER, GPIO.OUT)
 
-# Set up the GPIO pins for the ultrasonic sensor, the buzzer, and the vibration motor
-def setup():
-    # Vibration motor setup
-    GPIO.setup(37, GPIO.OUT)
-    # Vib = GPIO.PWM(VIB_MOTOR, 50) # This function is used to create a PWM instance.
-    # Vib.start(50)
-    global Buzz  # Define Buzz as a global variable
-    # global Vib
-    GPIO.cleanup() # As long as there are no other scripts running, this line can be run.
-    # GPIO.setmode(GPIO.BOARD)
+# PWM setup for buzzer
+Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
-    # Ultrasonic sensor setup
-    GPIO.setup(TRIG, GPIO.OUT)
-    GPIO.setup(ECHO, GPIO.IN)
+def distance(trig, echo):
+    # Set Trigger to HIGH
+    GPIO.output(trig, True)
+    time.sleep(0.00001)  # 10us delay
+    GPIO.output(trig, False)
 
-    # Buzzer setup
-    GPIO.setup(BUZZER, GPIO.OUT)
-    Buzz = GPIO.PWM(BUZZER, 440)
-    Buzz.start(50)
+    start_time = time.time()
+    stop_time = time.time()
 
-def distance():
-    print("Measuring distance...")
-    GPIO.output(TRIG, False)
-    time.sleep(0.000002)
+    # Save StartTime
+    while GPIO.input(echo) == 0:
+        start_time = time.time()
 
-    GPIO.output(TRIG, True)
-    time.sleep(0.00001)
-    GPIO.output(TRIG, False)
+    # Save time of arrival
+    while GPIO.input(echo) == 1:
+        stop_time = time.time()
 
-    pulse_start = time.time()
-    while GPIO.input(ECHO) == 0:
-        pulse_start = time.time()
-        if time.time() - pulse_start > 0.01:  # Just to prevent an infinite loop
-            print("Echo pulse not received - start")
-            return -1
+    # Time difference between start and arrival
+    time_elapsed = stop_time - start_time
+    # Multiply with the sonic speed (34300 cm/s)
+    # and divide by 2, because there and back
+    distance = (time_elapsed * 34300) / 2
 
-    pulse_end = time.time()
-    while GPIO.input(ECHO) == 1:
-        pulse_end = time.time()
-        if time.time() - pulse_end > 0.01:  # Just to prevent an infinite loop
-            print("Echo pulse not received - end")
-            return -1
-
-    pulse_duration = pulse_end - pulse_start
-    distance = pulse_duration * 17150  # Speed of sound at sea level is 34300 cm/s
-    distance = round(distance, 2)
-    print("Measured distance: ", distance, "cm")
     return distance
 
-
-def detect_red():
-    # global MOTOR_STATE
-    color_rgb = sensor.color_rgb_bytes
-    print(f"RGB color: {color_rgb}")
-    # A simple check for red color dominance
-    if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
-        # if not MOTOR_STATE:
-        GPIO.output(37, GPIO.HIGH) # Turn on vibration motor
-        time.sleep(10)
-        GPIO.output(37, GPIO.LOW)   # Turn off vibration motor
-            # Vib.start(50)
-            # MOTOR_STATE = True
-    else:
-        # if MOTOR_STATE:
-        GPIO.output(37, GPIO.LOW)   # Turn off vibration motor
-            # Vib.stop()
-            # MOTOR_STATE = False
-    time.sleep(0.5) # Delay to prevent overwhelming the RGB sensor
-
-def loop():
+def ultrasonic_sensor_loop():
     while True:
-        # dis = distance()
-        # print(dis, 'cm')
-        # Buzz.stop()
-        # # Changing frequencies
-        # d = 0
-        # # Activate buzzer when distance is less than 200 cm (2 meters)
-        # if dis < 200:
-        #     Buzz.start(75)
-        #     if (d % 2) == 0:
-        #         Buzz.ChangeFrequency(600)
-        #     else:
-        #         Buzz.ChangeFrequency(500)
-        #     time.sleep(0.5)
-        #     d+=1
-        # else:
-        #     time.sleep(0.3)
-        
-        # Check for the color red
-        detect_red()
+        dist1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
+        dist2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
 
-def destroy():
-    # Vib.stop()
-    Buzz.stop()
-    GPIO.cleanup()
+        if dist1 < 200:  # less than 2 meters
+            GPIO.output(RELAY_1, GPIO.HIGH)  # Turn on vibration motor 1
+        else:
+            GPIO.output(RELAY_1, GPIO.LOW)  # Turn off vibration motor 1
 
-# Run the code
-if __name__ == "__main__":
-    setup()
+        if dist2 < 700:  # less than 7 meters
+            Buzz.start(50)  # Turn on passive buzzer
+        else:
+            Buzz.stop()  # Turn off passive buzzer
+
+        time.sleep(0.1)
+
+def detect_red_loop():
+    while True:
+        color_rgb = sensor.color_rgb_bytes
+        # Check if red is the dominant color
+        if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
+            GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
+        else:
+            GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
+
+        time.sleep(0.1)
+
+def main():
     try:
-        loop()
+        # Threads setup
+        ultrasonic_thread = threading.Thread(target=ultrasonic_sensor_loop)
+        red_detect_thread = threading.Thread(target=detect_red_loop)
+
+        # Start threads
+        ultrasonic_thread.start()
+        red_detect_thread.start()
+
+        # Join threads to the main thread
+        ultrasonic_thread.join()
+        red_detect_thread.join()
     except KeyboardInterrupt:
-        destroy()
+        GPIO.cleanup()
+        print("Program stopped by User")
+
+if __name__ == "__main__":
+    main()
