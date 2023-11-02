@@ -29,6 +29,8 @@ except RuntimeError as e:
     print("Error setting GPIO mode: " + str(e))
 except Exception as e:
     print("Error occurred: " + str(e))
+    GPIO.cleanup()
+    GPIO.setmode(GPIO.BCM)
 
 # RGB sensor setup
 i2c = board.I2C()
