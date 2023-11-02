@@ -76,20 +76,23 @@ def distance():
 
 
 def detect_red():
-    global MOTOR_STATE
+    # global MOTOR_STATE
     color_rgb = sensor.color_rgb_bytes
     print(f"RGB color: {color_rgb}")
     # A simple check for red color dominance
     if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
-        if not MOTOR_STATE:
-            GPIO.output(VIB_MOTOR, GPIO.HIGH) # Turn on vibration motor
+        # if not MOTOR_STATE:
+        GPIO.output(VIB_MOTOR, GPIO.HIGH) # Turn on vibration motor
+        time.sleep(10)
+        GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
             # Vib.start(50)
-            MOTOR_STATE = True
+            # MOTOR_STATE = True
     else:
-        if MOTOR_STATE:
-            GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
+        # if MOTOR_STATE:
+        GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
             # Vib.stop()
-            MOTOR_STATE = False
+            # MOTOR_STATE = False
+    time.sleep(0.5) # Delay to prevent overwhelming the RGB sensor
 
 def loop():
     while True:
@@ -112,7 +115,6 @@ def loop():
         
         # Check for the color red
         detect_red()
-        time.sleep(1)  # Delay to prevent overwhelming the RGB sensor
 
 def destroy():
     # Vib.stop()
