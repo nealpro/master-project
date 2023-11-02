@@ -88,6 +88,7 @@ def distance(trig, echo):
 def ultrasonic_sensor_loop():
     print("Ultrasonic sensor loop started.")
     while True:
+        print("Measuring distances.")
         dist1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
         dist2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
         print(f"Distances: {dist1}, {dist2}")
@@ -116,10 +117,10 @@ def detect_red_loop():
         # Check if red is the dominant color
         if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
             print("Red detected")
-            GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
+            GPIO.output(RELAY_1, GPIO.HIGH)  # Turn on vibration motor 2
             print("Vibration motor 2 turned on.")
         else:
-            GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
+            GPIO.output(RELAY_1, GPIO.LOW)  # Turn off vibration motor 2
             print("Vibration motor 2 turned off.")
 
         time.sleep(0.1)
