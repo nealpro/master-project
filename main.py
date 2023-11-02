@@ -11,19 +11,24 @@ GPIO.setwarnings(False)
 try:
     GPIO.cleanup()
 except RuntimeError:
-    pass  # Ignore errors in cleanup
+    print("Error cleaning up GPIO settings")
 
 # Pins configuration
 ULTRASONIC_1_TRIG = 11
-ULTRASONIC_1_ECHO = 12
-ULTRASONIC_2_TRIG = 13
-ULTRASONIC_2_ECHO = 15
-RELAY_1 = 16
-RELAY_2 = 18
-BUZZER = 22
+ULTRASONIC_1_ECHO = 13
+ULTRASONIC_2_TRIG = 36
+ULTRASONIC_2_ECHO = 38
+RELAY_1 = 35
+RELAY_2 = 37
+BUZZER = 40
 
 # Set GPIO mode
-GPIO.setmode(GPIO.BOARD)
+try:
+    GPIO.setmode(GPIO.BOARD)
+except RuntimeError as e:
+    print("Error setting GPIO mode: " + str(e))
+except Exception as e:
+    print("Error occurred: " + str(e))
 
 # RGB sensor setup
 i2c = board.I2C()
@@ -90,6 +95,7 @@ def detect_red_loop():
         color_rgb = sensor.color_rgb_bytes
         # Check if red is the dominant color
         if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
+            print("Red detected")
             GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
         else:
             GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
