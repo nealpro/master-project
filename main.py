@@ -4,6 +4,15 @@ import threading
 import board
 import adafruit_tcs34725
 
+# Ensure GPIO warnings are not displayed
+GPIO.setwarnings(False)
+
+# Attempt to clean up any previous GPIO settings
+try:
+    GPIO.cleanup()
+except RuntimeError:
+    pass  # Ignore errors in cleanup
+
 # Pins configuration
 ULTRASONIC_1_TRIG = 11
 ULTRASONIC_1_ECHO = 12
@@ -13,6 +22,9 @@ RELAY_1 = 16
 RELAY_2 = 18
 BUZZER = 22
 
+# Set GPIO mode
+GPIO.setmode(GPIO.BOARD)
+
 # RGB sensor setup
 i2c = board.I2C()
 sensor = adafruit_tcs34725.TCS34725(i2c)
@@ -20,7 +32,6 @@ sensor.integration_time = 50
 sensor.gain = 4
 
 # GPIO setup
-GPIO.setmode(GPIO.BOARD)
 GPIO.setup(ULTRASONIC_1_TRIG, GPIO.OUT)
 GPIO.setup(ULTRASONIC_1_ECHO, GPIO.IN)
 GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
