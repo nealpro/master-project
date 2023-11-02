@@ -25,7 +25,8 @@ BUZZER = 40
 
 # Set GPIO mode
 try:
-    GPIO.setmode(GPIO.BOARD)
+    # GPIO.setmode(GPIO.BOARD)
+    board.set_pin_factory(GPIO)
     print("GPIO mode set to BOARD.")
 except RuntimeError as e:
     print("Error setting GPIO mode: " + str(e))
