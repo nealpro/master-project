@@ -5,7 +5,7 @@ import board
 import adafruit_tcs34725
 
 # Ensure GPIO warnings are not displayed
-GPIO.setwarnings(False)
+GPIO.setwarnings(True)
 
 # Attempt to clean up any previous GPIO settings
 try:
