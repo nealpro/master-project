@@ -13,7 +13,7 @@ ECHO = 12
 BUZZER = 35
 
 # Vibration motor pin
-VIB_MOTOR = 37  # GPIO 26
+# VIB_MOTOR = 37  # GPIO 26
 
 # RGB sensor setup
 i2c = board.I2C()
@@ -26,6 +26,10 @@ MOTOR_STATE = False
 
 # Set up the GPIO pins for the ultrasonic sensor, the buzzer, and the vibration motor
 def setup():
+    # Vibration motor setup
+    GPIO.setup(37, GPIO.OUT)
+    # Vib = GPIO.PWM(VIB_MOTOR, 50) # This function is used to create a PWM instance.
+    # Vib.start(50)
     global Buzz  # Define Buzz as a global variable
     # global Vib
     GPIO.cleanup() # As long as there are no other scripts running, this line can be run.
@@ -39,11 +43,6 @@ def setup():
     GPIO.setup(BUZZER, GPIO.OUT)
     Buzz = GPIO.PWM(BUZZER, 440)
     Buzz.start(50)
-
-    # Vibration motor setup
-    GPIO.setup(VIB_MOTOR, GPIO.OUT)
-    # Vib = GPIO.PWM(VIB_MOTOR, 50) # This function is used to create a PWM instance.
-    # Vib.start(50)
 
 def distance():
     print("Measuring distance...")
@@ -82,14 +81,14 @@ def detect_red():
     # A simple check for red color dominance
     if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
         # if not MOTOR_STATE:
-        GPIO.output(VIB_MOTOR, GPIO.HIGH) # Turn on vibration motor
+        GPIO.output(37, GPIO.HIGH) # Turn on vibration motor
         time.sleep(10)
-        GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
+        GPIO.output(37, GPIO.LOW)   # Turn off vibration motor
             # Vib.start(50)
             # MOTOR_STATE = True
     else:
         # if MOTOR_STATE:
-        GPIO.output(VIB_MOTOR, GPIO.LOW)   # Turn off vibration motor
+        GPIO.output(37, GPIO.LOW)   # Turn off vibration motor
             # Vib.stop()
             # MOTOR_STATE = False
     time.sleep(0.5) # Delay to prevent overwhelming the RGB sensor
