@@ -62,17 +62,24 @@ def distance(trig, echo):
 
 def ultrasonic_sensor_loop():
     while True:
+        print("Ultrasonic sensor 1")
         dist1 = distance(ultrasonic_1_trig, ultrasonic_1_echo)
         dist2 = distance(ultrasonic_2_trig, ultrasonic_2_echo)
+        print("Distance 1: {:.2f} cm".format(dist1))
+        print("Distance 2: {:.2f} cm".format(dist2))
 
         if dist1 < 200:
-            relay_1.value = True
+            print("Distance 1: In range")
+            # relay_1.value = True
         else:
-            relay_1.value = False
+            print("Distance 1: Out of range")
+            # relay_1.value = False
 
         if dist2 < 700:
+            print("Distance 2: In range")
             buzzer.duty_cycle = 32767  # 50% duty cycle
         else:
+            print("Distance 2: Out of range")
             buzzer.duty_cycle = 0
 
         time.sleep(0.1)
@@ -82,9 +89,10 @@ def detect_red_loop():
         color_rgb = sensor.color_rgb_bytes
         if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
             print("Red detected")
-            relay_2.value = True
+            # relay_2.value = True
         else:
-            relay_2.value = False
+            # relay_2.value = False
+            print("No red detected")
 
         time.sleep(0.1)
 
