@@ -138,7 +138,9 @@ def main():
 
         # Join threads to the main thread
         ultrasonic_thread.join()
+        print("Ultrasonic thread joined.")
         red_detect_thread.join()
+        print("Red detection thread joined.")
     except KeyboardInterrupt:
         print("Program stopped by User")
     finally:
