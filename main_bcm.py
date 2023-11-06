@@ -15,13 +15,13 @@ except RuntimeError:
     print("Error cleaning up GPIO settings")
 
 # Pins configuration
-# ULTRASONIC_1_TRIG = 11
-# ULTRASONIC_1_ECHO = 13
-# ULTRASONIC_2_TRIG = 36
-# ULTRASONIC_2_ECHO = 38
+ULTRASONIC_1_TRIG = 17
+ULTRASONIC_1_ECHO = 27
+ULTRASONIC_2_TRIG = 23
+ULTRASONIC_2_ECHO = 24
 RELAY_1 = 21
-# RELAY_2 = 37
-# BUZZER = 40
+RELAY_2 = 26
+BUZZER = 7
 
 # Set GPIO mode
 try:
