@@ -68,7 +68,7 @@ def button_action(x):
         button_state = True
     loop()
 
-def detect():
+def detect(arg):
     button_action(GPIO.input(BUTTON))
 
 def loop():
@@ -104,8 +104,8 @@ def loop():
     else:
         while button_state == False:
             print("All remains off")
-            detect()
-    detect()
+            detect(0)
+    detect(0)
 
 def destroy():
     GPIO.cleanup()
