@@ -5,7 +5,7 @@ import time
 pi = pigpio.pi()
 
 # Define your buzzer pin
-BUZZER = 40 # Use the BCM pin number
+BUZZER = 17 # Use the BCM pin number
 
 # Set the buzzer pin as an output
 pi.set_mode(BUZZER, pigpio.OUTPUT)

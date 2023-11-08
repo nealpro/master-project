@@ -20,6 +20,7 @@ BUTTON = 18
 DEBOUNCE_TIME = 2  # seconds
 DISTANCE_THRESHOLD_1 = 200  # cm
 DISTANCE_THRESHOLD_2 = 700  # cm
+RELAY_TOGGLE_DELAY = 2  # seconds
 
 # State variables
 relay1_state = False
@@ -113,7 +114,7 @@ def main():
             # Check if the dominant color is red, and if so, toggle the relay
             if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
                 # Only toggle the relay if enough time has passed since the last toggle
-                if time.time() - relay1_last_toggle_time > relay_toggle_delay:
+                if time.time() - relay1_last_toggle_time > RELAY_TOGGLE_DELAY:
                     relay1_state = not relay1_state  # Toggle the state
                     relay1_last_toggle_time = time.time()  # Update the last toggle time
                     toggle_relay(RELAY_1, GPIO.HIGH if relay1_state else GPIO.LOW)
