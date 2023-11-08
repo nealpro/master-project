@@ -23,7 +23,7 @@ RELAY_1 = 21
 RELAY_2 = 26
 BUZZER = 7
 BUTTON = 18
-button_state = False # This actually starts the red detection loop even though it is set to False because of pull up resistor!
+button_state = True
 
 # Set GPIO mode
 try:
@@ -92,7 +92,7 @@ def distance(trig, echo):
 
 def ultrasonic_sensor_loop():
     print("Ultrasonic sensor loop started.")
-    while True:
+    while button_state:
         print("Measuring distances.")
         dist1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
         dist2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
@@ -116,7 +116,17 @@ def ultrasonic_sensor_loop():
             print("Passive buzzer turned off.")
             time.sleep(0.5)
 
+        if (GPIO.input(BUTTON) == False):
+            button_state = False
+            print("Button pressed, exiting ultrasonic sensor loop.")
+
         time.sleep(1)
+    else:
+        print("Ultrasonic sensor loop stopped.")
+        if (GPIO.input(BUTTON) == False):
+            button_state = True
+            print("Button pressed, entering ultrasonic sensor loop.")
+            ultrasonic_sensor_loop()
 
 def detect_red_loop():
     print("Red detection loop started.")
@@ -141,6 +151,7 @@ def detect_red_loop():
         if (GPIO.input(BUTTON) == False):
             button_state = True
             print("Button pressed, entering red detection loop.")
+            ultrasonic_sensor_loop()
 
 def main():
     print("Main function started.")
