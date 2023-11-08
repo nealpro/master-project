@@ -52,8 +52,8 @@ GPIO.setup(ULTRASONIC_1_TRIG, GPIO.OUT)
 GPIO.setup(ULTRASONIC_1_ECHO, GPIO.IN)
 GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
 GPIO.setup(ULTRASONIC_2_ECHO, GPIO.IN)
-GPIO.setup(RELAY_1, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN) # These are set to pull down so that their values are low when not in use!
-GPIO.setup(RELAY_2, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN) # I think that it's a very neat feature of the Pi to have pull up/down resistors built in!
+GPIO.setup(RELAY_1, GPIO.OUT) # Outputs can't be set to pull up or down 🤡
+GPIO.setup(RELAY_2, GPIO.OUT)
 GPIO.setup(BUZZER, GPIO.OUT)
 GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 print("GPIO pins setup complete.")
