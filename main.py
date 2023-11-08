@@ -23,7 +23,7 @@ RELAY_1 = 21
 RELAY_2 = 26
 BUZZER = 7
 BUTTON = 18
-button_state = False
+button_state = False # This actually starts the red detection loop even though it is set to False because of pull up resistor!
 
 # Set GPIO mode
 try:
