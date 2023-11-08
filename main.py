@@ -22,6 +22,8 @@ ULTRASONIC_2_ECHO = 24
 RELAY_1 = 21
 RELAY_2 = 26
 BUZZER = 7
+BUTTON = 18
+button_state = False
 
 # Set GPIO mode
 try:
@@ -50,9 +52,10 @@ GPIO.setup(ULTRASONIC_1_TRIG, GPIO.OUT)
 GPIO.setup(ULTRASONIC_1_ECHO, GPIO.IN)
 GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
 GPIO.setup(ULTRASONIC_2_ECHO, GPIO.IN)
-GPIO.setup(RELAY_1, GPIO.OUT)
-GPIO.setup(RELAY_2, GPIO.OUT)
+GPIO.setup(RELAY_1, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN) # These are set to pull down so that their values are low when not in use!
+GPIO.setup(RELAY_2, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN) # I think that it's a very neat feature of the Pi to have pull up/down resistors built in!
 GPIO.setup(BUZZER, GPIO.OUT)
+GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 print("GPIO pins setup complete.")
 
 # PWM setup for buzzer
@@ -117,7 +120,7 @@ def ultrasonic_sensor_loop():
 
 def detect_red_loop():
     print("Red detection loop started.")
-    while True:
+    while button_state:
         color_rgb = sensor.color_rgb_bytes
         print(f"RGB color detected: {color_rgb}")
         # Check if red is the dominant color
@@ -130,6 +133,14 @@ def detect_red_loop():
             print("Vibration motor 2 turned off.")
 
         time.sleep(0.1)
+        if (GPIO.input(BUTTON) == False):
+            button_state = False
+            print("Button pressed, exiting red detection loop.")
+    else:
+        print("Red detection loop stopped.")
+        if (GPIO.input(BUTTON) == False):
+            button_state = True
+            print("Button pressed, entering red detection loop.")
 
 def main():
     print("Main function started.")
