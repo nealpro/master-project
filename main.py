@@ -4,16 +4,6 @@ import threading
 import board
 import adafruit_tcs34725
 
-# Ensure GPIO warnings are not displayed
-GPIO.setwarnings(True)
-
-# Attempt to clean up any previous GPIO settings
-try:
-    GPIO.cleanup()
-    print("GPIO cleanup successful.")
-except RuntimeError:
-    print("Error cleaning up GPIO settings")
-
 # Pins configuration
 ULTRASONIC_1_TRIG = 17
 ULTRASONIC_1_ECHO = 27
@@ -23,29 +13,16 @@ RELAY_1 = 21
 RELAY_2 = 26
 BUZZER = 7
 BUTTON = 18
-button_state = True
 
 # Set GPIO mode
-try:
-    # GPIO.setmode(GPIO.BOARD)
-    GPIO.setmode(GPIO.BCM)
-    # board.set_pin_factory(GPIO)
-    print("GPIO mode set to BCM.")
-except RuntimeError as e:
-    print("Error setting GPIO mode: " + str(e))
-except Exception as e:
-    print("Error occurred: " + str(e))
-    GPIO.cleanup()
-    GPIO.setmode(GPIO.BCM)
-    print("GPIO mode set to BCM after exception.")
-
+GPIO.setmode(GPIO.BCM)
 # RGB sensor setup
 i2c = board.I2C()  # Assuming this part works correctly since it's not GPIO related
 sensor = adafruit_tcs34725.TCS34725(i2c)
 sensor.integration_time = 50
 sensor.gain = 4
 print("RGB sensor setup complete.")
-
+time.sleep(1)
 # GPIO setup
 print("Setting up GPIO pins.")
 GPIO.setup(ULTRASONIC_1_TRIG, GPIO.OUT)
@@ -133,13 +110,12 @@ def detect_red_loop():
     while button_state:
         color_rgb = sensor.color_rgb_bytes
         print(f"RGB color detected: {color_rgb}")
-        # Check if red is the dominant color
         if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
             print("Red detected")
-            GPIO.output(RELAY_1, GPIO.HIGH)  # Turn on vibration motor 2
+            GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
             print("Vibration motor 2 turned on.")
         else:
-            GPIO.output(RELAY_1, GPIO.LOW)  # Turn off vibration motor 2
+            GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
             print("Vibration motor 2 turned off.")
 
         time.sleep(0.1)
