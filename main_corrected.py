@@ -17,6 +17,8 @@ BUTTON = 18
 button_state = True
 
 def setup():
+    global sensor
+    global Buzz
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
     GPIO.add_event_detect(BUTTON, GPIO.BOTH, callback=detect, bouncetime=200)
@@ -36,8 +38,8 @@ def setup():
     GPIO.setup(BUZZER, GPIO.OUT)
     GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-# PWM setup for buzzer
-Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
+    # PWM setup for buzzer
+    Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
 def distance(TRIG, ECHO):
     GPIO.output(TRIG, 0)
@@ -69,7 +71,6 @@ def detect(chn):
     button_action(GPIO.input(BUTTON))
 
 def loop():
-    global Buzz
     while button_state:
         dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
         dis2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
