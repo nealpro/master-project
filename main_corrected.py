@@ -68,13 +68,16 @@ def button_action(x):
         button_state = True
     loop()
 
-def detect(chn):
+def detect():
     button_action(GPIO.input(BUTTON))
 
 def loop():
     while button_state:
         dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
         dis2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
+
+        print(f"Distance 1: {dis1} cm")
+        print(f"Distance 2: {dis2} cm")
 
         if dis1 < 200:
             GPIO.output(RELAY_1, GPIO.HIGH)
@@ -93,9 +96,16 @@ def loop():
             print("Red detected")
             GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
             print("Vibration motor 2 turned on.")
+            time.sleep(1)
         else:
             GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
             print("Vibration motor 2 turned off.")
+            time.sleep(1)
+    else:
+        while button_state == False:
+            print("All remains off")
+            detect()
+    detect()
 
 def destroy():
     GPIO.cleanup()
