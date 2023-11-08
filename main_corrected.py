@@ -66,7 +66,7 @@ def button_action(x):
         button_state = False
     if x == 1:
         button_state = True
-        loop()
+    loop()
 
 def detect(chn):
     button_action(GPIO.input(BUTTON))
@@ -96,7 +96,6 @@ def loop():
         else:
             GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
             print("Vibration motor 2 turned off.")
-    pass
 
 def destroy():
     GPIO.cleanup()
