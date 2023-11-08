@@ -96,20 +96,24 @@ def ultrasonic_sensor_loop():
         print(f"Distances: {dist1}, {dist2}")
 
         if dist1 < 200:  # less than 2 meters
-            GPIO.output(RELAY_1, GPIO.HIGH)  # Turn on vibration motor 1
+            # GPIO.output(RELAY_1, GPIO.HIGH)
             print("Vibration motor 1 turned on.")
+            time.sleep(0.5)
         else:
-            GPIO.output(RELAY_1, GPIO.LOW)  # Turn off vibration motor 1
+            # GPIO.output(RELAY_1, GPIO.LOW)
             print("Vibration motor 1 turned off.")
+            time.sleep(0.5)
 
         if dist2 < 700:  # less than 7 meters
             Buzz.start(50)  # Turn on passive buzzer
             print("Passive buzzer turned on.")
+            time.sleep(0.5)
         else:
             Buzz.stop()  # Turn off passive buzzer
             print("Passive buzzer turned off.")
+            time.sleep(0.5)
 
-        time.sleep(0.1)
+        time.sleep(1)
 
 def detect_red_loop():
     print("Red detection loop started.")
@@ -132,18 +136,18 @@ def main():
     try:
         # Threads setup
         ultrasonic_thread = threading.Thread(target=ultrasonic_sensor_loop)
-        red_detect_thread = threading.Thread(target=detect_red_loop)
+        # red_detect_thread = threading.Thread(target=detect_red_loop)
 
         # Start threads
         ultrasonic_thread.start()
-        red_detect_thread.start()
+        # red_detect_thread.start()
         print("Threads started.")
 
         # Join threads to the main thread
         ultrasonic_thread.join()
         print("Ultrasonic thread joined.")
-        red_detect_thread.join()
-        print("Red detection thread joined.")
+        # red_detect_thread.join()
+        # print("Red detection thread joined.")
     except KeyboardInterrupt:
         print("Program stopped by User")
     finally:
