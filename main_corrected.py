@@ -11,9 +11,10 @@ ULTRASONIC_2_ECHO = 24
 RELAY_1 = 21 # Relay 1 is for ultrasonic 1
 RELAY_2 = 26 # Relay 2 is for RGB sensor
 BUZZER = 7 # Buzzer is for ultrasonic 2
+TOUCH = 16 # Touch sensor to toggle system on/off
 
 # States
-button_state = True
+touch_state = 0
 
 def setup():
     global sensor
@@ -37,6 +38,14 @@ def setup():
     # PWM setup for buzzer
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
+def detect(state):
+    if state != touch_state:
+        if state == 0:
+            print("Touch switch is currently released.")
+        if state == 1:
+            print("Touch switch is currently pressed.")
+        touch_state = state
+
 def distance(TRIG, ECHO):
     GPIO.output(TRIG, 0)
     time.sleep(0.000002)
@@ -46,11 +55,10 @@ def distance(TRIG, ECHO):
     GPIO.output(TRIG, 0)
 
     while GPIO.input(ECHO) == 0:
-        pass
+        a = 0
     time1 = time.time()
-    
     while GPIO.input(ECHO) == 1:
-        pass
+        a = 1
     time2 = time.time()
 
     during = time2 - time1
@@ -58,36 +66,48 @@ def distance(TRIG, ECHO):
 
 def loop():
     while True:
-        dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
-        dis2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
+        if touch_state == 0:
+            dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
+            dis2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
 
-        print(f"Distance 1: {dis1} cm")
-        print(f"Distance 2: {dis2} cm")
+            print(f"Distance 1: {dis1} cm")
+            print(f"Distance 2: {dis2} cm")
 
-        if dis1 < 2:
-            GPIO.output(RELAY_1, GPIO.HIGH)
-            print("Relay 1 on")
+            if dis1 < 50:
+                GPIO.output(RELAY_1, GPIO.HIGH)
+                print("Relay 1 on")
+            else:
+                GPIO.output(RELAY_1, GPIO.LOW)
+                print("Relay 1 off")
+            if dis2 < 400:
+                Buzz.start(50)
+            else:
+                Buzz.stop()
+
+            color_rgb = sensor.color_rgb_bytes
+            print(f"RGB color detected: {color_rgb}")
+            if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
+                print("Red detected")
+                GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
+                print("Vibration motor 2 turned on.")
+            else:
+                GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
+                print("Vibration motor 2 turned off.")
+            print("Program will now wait for a second.")
+            time.sleep(1)
         else:
             GPIO.output(RELAY_1, GPIO.LOW)
-            print("Relay 1 off")
-        if dis2 < 5:
-            Buzz.start(50)
-        else:
+            GPIO.output(RELAY_2, GPIO.LOW)
             Buzz.stop()
-
-        color_rgb = sensor.color_rgb_bytes
-        print(f"RGB color detected: {color_rgb}")
-        if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
-            print("Red detected")
-            GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
-            print("Vibration motor 2 turned on.")
-            time.sleep(1)
-        else:
-            GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
-            print("Vibration motor 2 turned off.")
-            time.sleep(1)
+            print("System turned off.")
+            print("Checking...")
+            detect(GPIO.input(TOUCH))
+            time.sleep(0.1)
 
 def destroy():
+    GPIO.output(RELAY_1, GPIO.LOW)
+    GPIO.output(RELAY_2, GPIO.LOW)
+    Buzz.stop()
     GPIO.cleanup()
 
 if __name__ == '__main__':     # Program start from here
