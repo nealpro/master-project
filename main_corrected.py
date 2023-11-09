@@ -36,7 +36,7 @@ def setup():
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
     GPIO.setup(TOUCH, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
-    GPIO.output(RELAY_2, GPIO.HIGH)
+    # GPIO.output(RELAY_2, GPIO.HIGH)
 
     # PWM setup for buzzer
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
@@ -93,10 +93,10 @@ def loop():
             print(f"RGB color detected: {color_rgb}")
             if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
                 print("Red detected")
-                GPIO.output(RELAY_2, GPIO.LOW)  # Turn on vibration motor 2
+                GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
                 print("Vibration motor 2 turned on.")
             else:
-                GPIO.output(RELAY_2, GPIO.HIGH)  # Turn off vibration motor 2
+                GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
                 print("Vibration motor 2 turned off.")
             print("Program will now wait for a second.")
             time.sleep(2)
@@ -104,7 +104,7 @@ def loop():
             detect(GPIO.input(TOUCH))
         else:
             GPIO.output(RELAY_1, GPIO.LOW)
-            GPIO.output(RELAY_2, GPIO.HIGH)
+            GPIO.output(RELAY_2, GPIO.LOW)
             Buzz.stop()
             print("System turned off.")
             print("Checking...")
@@ -113,7 +113,7 @@ def loop():
 
 def destroy():
     GPIO.output(RELAY_1, GPIO.LOW)
-    GPIO.output(RELAY_2, GPIO.HIGH)
+    GPIO.output(RELAY_2, GPIO.LOW)
     Buzz.stop()
     GPIO.cleanup()
 
