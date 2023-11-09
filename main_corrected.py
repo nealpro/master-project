@@ -94,7 +94,9 @@ def loop():
                 GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
                 print("Vibration motor 2 turned off.")
             print("Program will now wait for a second.")
-            time.sleep(1)
+            time.sleep(2)
+            print("Checking...")
+            detect(GPIO.input(TOUCH))
         else:
             GPIO.output(RELAY_1, GPIO.LOW)
             GPIO.output(RELAY_2, GPIO.LOW)
