@@ -41,6 +41,7 @@ def setup():
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
 def detect(state):
+    global touch_state
     if state != touch_state:
         if state == 0:
             print("Touch switch is currently released.")
