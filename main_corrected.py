@@ -34,6 +34,7 @@ def setup():
     GPIO.setup(RELAY_1, GPIO.OUT)
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
+    GPIO.setup(TOUCH, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
 
     # PWM setup for buzzer
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
