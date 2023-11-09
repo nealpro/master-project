@@ -65,6 +65,7 @@ def distance(TRIG, ECHO):
     return during * 340 / 2 * 100
 
 def loop():
+    global touch_state
     while True:
         if touch_state == 0:
             dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
