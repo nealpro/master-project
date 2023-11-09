@@ -13,12 +13,11 @@ RELAY_2 = 26 # Relay 2 is for RGB sensor
 BUZZER = 7 # Buzzer is for ultrasonic 2
 TOUCH = 16 # Touch sensor to toggle system on/off
 
-# States
-touch_state = 0
-
 def setup():
+    global touch_state
     global sensor
     global Buzz
+    touch_state = 0
     GPIO.setmode(GPIO.BCM)
     # RGB sensor setup
     i2c = board.I2C()
