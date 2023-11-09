@@ -15,6 +15,8 @@ TOUCH = 16 # Touch sensor to toggle system on/off
 
 touch_state = 0
 
+print(touch_state)
+
 def setup():
     global sensor
     global Buzz
