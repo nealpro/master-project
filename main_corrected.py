@@ -10,7 +10,7 @@ ULTRASONIC_1_TRIG = 17
 ULTRASONIC_1_ECHO = 27
 ULTRASONIC_2_TRIG = 23
 ULTRASONIC_2_ECHO = 24
-RELAY_1 = 21 # Relay 1 is for ultrasonic 1
+# RELAY_1 = 21 # Relay 1 is for ultrasonic 1
 RELAY_2 = 26 # Relay 2 is for RGB sensor
 BUZZER = 7 # Buzzer is for ultrasonic 2
 BUTTON = 16 # Touch sensor to toggle system on/off
@@ -34,7 +34,7 @@ def setup():
     GPIO.setup(ULTRASONIC_1_ECHO, GPIO.IN)
     GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
     GPIO.setup(ULTRASONIC_2_ECHO, GPIO.IN)
-    GPIO.setup(RELAY_1, GPIO.OUT)
+    # GPIO.setup(RELAY_1, GPIO.OUT)
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
     GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
@@ -108,10 +108,10 @@ def loop():
             print(f"Distance 1: {dis1} cm")
             
             if dis1 < 50.0:
-                GPIO.output(RELAY_1, GPIO.HIGH)
+                # GPIO.output(RELAY_1, GPIO.HIGH)
                 print("Relay 1 on")
             else:
-                GPIO.output(RELAY_1, GPIO.LOW)
+                # GPIO.output(RELAY_1, GPIO.LOW)
                 print("Relay 1 off")
 
             dis2 = distance2()
@@ -136,7 +136,7 @@ def loop():
             print("Checking...")
             detect(GPIO.input(BUTTON))
         else:
-            GPIO.output(RELAY_1, GPIO.LOW)
+            # GPIO.output(RELAY_1, GPIO.LOW)
             GPIO.output(RELAY_2, GPIO.LOW)
             Buzz.stop()
             print("System turned off.")
@@ -145,7 +145,7 @@ def loop():
             time.sleep(0.1)
 
 def destroy():
-    GPIO.output(RELAY_1, GPIO.LOW)
+    # GPIO.output(RELAY_1, GPIO.LOW)
     GPIO.output(RELAY_2, GPIO.LOW)
     Buzz.stop()
     GPIO.cleanup()
