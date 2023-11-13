@@ -17,6 +17,8 @@ TOUCH = 16 # Touch sensor to toggle system on/off
 
 touch_state = 0
 
+a = 0
+
 print(touch_state)
 
 def setup():
@@ -72,6 +74,7 @@ def distance(TRIG, ECHO, queue):
 
 def loop():
     global touch_state
+    global a
     while True:
         if touch_state == 0:
             # dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
@@ -115,10 +118,14 @@ def loop():
             time.sleep(2)
             print("Checking...")
             detect(GPIO.input(TOUCH))
+
+            a = 0
         else:
-            GPIO.output(RELAY_1, GPIO.LOW)
-            GPIO.output(RELAY_2, GPIO.LOW)
-            Buzz.stop()
+            if a == 0:
+                GPIO.output(RELAY_1, GPIO.LOW)
+                GPIO.output(RELAY_2, GPIO.LOW)
+                Buzz.stop()
+                a = 1
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(TOUCH))
