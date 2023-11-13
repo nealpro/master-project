@@ -140,7 +140,7 @@ def loop():
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(BUTTON))
-            time.sleep(2)
+        time.sleep(2)
 
 
 def destroy():
