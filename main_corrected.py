@@ -5,6 +5,8 @@ import adafruit_tcs34725
 # import threading
 # import queue
 
+# https://github.com/numediart/MBROLA/releases/download/3.3/MBROLA-3.3.tar.gz.asc
+
 # Pins configuration
 ULTRASONIC_1_TRIG = 17
 ULTRASONIC_1_ECHO = 27
@@ -37,7 +39,7 @@ def setup():
     # GPIO.setup(RELAY_1, GPIO.OUT)
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
-    GPIO.setup(TOUCH, GPIO.IN) # pull up to high level
+    GPIO.setup(TOUCH, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
     # GPIO.output(RELAY_2, GPIO.HIGH)
 
     # PWM setup for buzzer
