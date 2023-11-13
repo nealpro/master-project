@@ -113,15 +113,15 @@ def loop():
             else:
                 # GPIO.output(RELAY_1, GPIO.LOW)
                 print("Relay 1 off")
-
+            time.sleep(1)
             dis2 = distance2()
             print(f"Distance 2: {dis2} cm")
 
             if dis2 < 400.0:
-                Buzz.start(50)
+                Buzz.start(50.0)
             else:
                 Buzz.stop()
-
+            time.sleep(1)
             color_rgb = sensor.color_rgb_bytes
             print(f"RGB color detected: {color_rgb}")
             if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
@@ -132,7 +132,7 @@ def loop():
                 GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
                 print("Vibration motor 2 turned off.")
             print("Program will now wait for a second.")
-            time.sleep(2)
+            time.sleep(1)
             print("Checking...")
             detect(GPIO.input(BUTTON))
         else:
