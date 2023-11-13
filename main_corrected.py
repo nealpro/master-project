@@ -43,14 +43,14 @@ def setup():
     # PWM setup for buzzer
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
-def detect(state):
+def detect(state: bool):
     global button_state
     if state != button_state:
         if state == 1:
             print("Touch switch is currently released.")
         if state == 0:
             print("Touch switch is currently pressed.")
-        button_state = state
+        button_state = not state
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
