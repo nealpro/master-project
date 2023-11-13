@@ -2,8 +2,8 @@ import RPi.GPIO as GPIO
 import time
 import board
 import adafruit_tcs34725
-import threading
-import queue
+# import threading
+# import queue
 
 # Pins configuration
 ULTRASONIC_1_TRIG = 17
@@ -54,7 +54,7 @@ def detect(state):
             print("Touch switch is currently pressed.")
         touch_state = state
 
-def distance(TRIG, ECHO, queue):
+def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
     time.sleep(0.000002)
 
@@ -70,26 +70,44 @@ def distance(TRIG, ECHO, queue):
     time2 = time.time()
 
     during = time2 - time1
-    queue.put(during * 340 / 2 * 100)
+    return during * 340 / 2 * 100
+
+def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
+    GPIO.output(TRIG, 0)
+    time.sleep(0.000002)
+
+    GPIO.output(TRIG, 1)
+    time.sleep(0.00001)
+    GPIO.output(TRIG, 0)
+
+    while GPIO.input(ECHO) == 0:
+        a = 0
+    time3 = time.time()
+    while GPIO.input(ECHO) == 1:
+        a = 1
+    time4 = time.time()
+
+    during = time4 - time3
+    return during * 340 / 2 * 100
 
 def loop():
     global touch_state
     global a
     while True:
         if touch_state == 0:
-            # dis1 = distance(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO)
-            dis1q = queue.Queue()
-            dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
-            dis1th.start()
-            dis1th.join()
-            dis1 = dis1q.get() 
+            dis1 = distance1()
+            # dis1q = queue.Queue()
+            # dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
+            # dis1th.start()
+            # dis1th.join()
+            # dis1 = dis1q.get() 
 
-            # dis2 = distance(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO)
-            dis2q = queue.Queue()
-            dis2th = threading.Thread(target=distance, args=(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO, dis2q))
-            dis2th.start()
-            dis2th.join()
-            dis2 = dis2q.get()
+            dis2 = distance2()
+            # dis2q = queue.Queue()
+            # dis2th = threading.Thread(target=distance, args=(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO, dis2q))
+            # dis2th.start()
+            # dis2th.join()
+            # dis2 = dis2q.get()
 
             print(f"Distance 1: {dis1} cm")
             print(f"Distance 2: {dis2} cm")
