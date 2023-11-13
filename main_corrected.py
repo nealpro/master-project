@@ -46,9 +46,9 @@ def setup():
 def detect(state):
     global button_state
     if state != button_state:
-        if state == 0:
-            print("Touch switch is currently released.")
         if state == 1:
+            print("Touch switch is currently released.")
+        if state == 0:
             print("Touch switch is currently pressed.")
         button_state = state
 
