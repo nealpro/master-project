@@ -15,7 +15,7 @@ RELAY_2 = 26 # Relay 2 is for RGB sensor
 BUZZER = 7 # Buzzer is for ultrasonic 2
 BUTTON = 16 # Touch sensor to toggle system on/off
 
-button_state = 0
+button_state = 1
 
 print(button_state)
 
@@ -50,7 +50,7 @@ def detect(state: bool):
             print("Touch switch is currently released.")
         if state == 0:
             print("Touch switch is currently pressed.")
-        button_state = not state
+        button_state = state
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
@@ -91,7 +91,7 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
 def loop():
     global button_state
     while True:
-        if button_state == 0:
+        if button_state == 1:
             # dis1q = queue.Queue()
             # dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
             # dis1th.start()
