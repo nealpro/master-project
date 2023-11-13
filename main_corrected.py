@@ -13,11 +13,11 @@ ULTRASONIC_2_ECHO = 24
 # RELAY_1 = 21 # Relay 1 is for ultrasonic 1
 RELAY_2 = 26 # Relay 2 is for RGB sensor
 BUZZER = 7 # Buzzer is for ultrasonic 2
-BUTTON = 16 # Touch sensor to toggle system on/off
+TOUCH = 16 # Touch sensor to toggle system on/off
 
-button_state = 1
+touch_state = 0
 
-print(button_state)
+print(touch_state)
 
 def setup():
     global sensor
@@ -37,20 +37,20 @@ def setup():
     # GPIO.setup(RELAY_1, GPIO.OUT)
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
-    GPIO.setup(BUTTON, GPIO.IN) # pull up to high level
+    GPIO.setup(TOUCH, GPIO.IN) # pull up to high level
     # GPIO.output(RELAY_2, GPIO.HIGH)
 
     # PWM setup for buzzer
     Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
 
 def detect(state: bool):
-    global button_state
-    if state != button_state:
-        if state == 1:
-            print("Touch switch is currently released.")
+    global touch_state
+    if state != touch_state:
         if state == 0:
+            print("Touch switch is currently released.")
+        if state == 1:
             print("Touch switch is currently pressed.")
-        button_state = state
+        touch_state = state
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
@@ -89,9 +89,9 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
     return during * 340 / 2 * 100
 
 def loop():
-    global button_state
+    global touch_state
     while True:
-        if button_state == 1:
+        if touch_state == 0:
             # dis1q = queue.Queue()
             # dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
             # dis1th.start()
@@ -134,12 +134,12 @@ def loop():
             print("Program will now wait for a second.")
             time.sleep(1)
             print("Checking...")
-            detect(GPIO.input(BUTTON))
+            detect(GPIO.input(TOUCH))
         else:
             # GPIO.output(RELAY_1, GPIO.LOW)
             print("System turned off.")
             print("Checking...")
-            detect(GPIO.input(BUTTON))
+            detect(GPIO.input(TOUCH))
         time.sleep(2)
 
 
