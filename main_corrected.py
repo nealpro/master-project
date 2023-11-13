@@ -144,7 +144,7 @@ def loop():
             if b == 0:
                 GPIO.output(RELAY_2, GPIO.LOW)
                 Buzz.stop()
-            b = 1
+            b += 1
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(BUTTON))
