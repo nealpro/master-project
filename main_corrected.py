@@ -17,8 +17,6 @@ BUTTON = 16 # Touch sensor to toggle system on/off
 
 button_state = 0
 
-b = 0
-
 print(button_state)
 
 def setup():
@@ -91,11 +89,9 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
     return during * 340 / 2 * 100
 
 def loop():
-    global b
     global button_state
     while True:
         if button_state == 0:
-            b = 0
             # dis1q = queue.Queue()
             # dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
             # dis1th.start()
@@ -141,14 +137,11 @@ def loop():
             detect(GPIO.input(BUTTON))
         else:
             # GPIO.output(RELAY_1, GPIO.LOW)
-            if b == 0:
-                GPIO.output(RELAY_2, GPIO.LOW)
-                Buzz.stop()
-            b += 1
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(BUTTON))
             time.sleep(0.1)
+
 
 def destroy():
     # GPIO.output(RELAY_1, GPIO.LOW)
