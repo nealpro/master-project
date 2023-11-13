@@ -37,7 +37,7 @@ def setup():
     # GPIO.setup(RELAY_1, GPIO.OUT)
     GPIO.setup(RELAY_2, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
-    GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
+    GPIO.setup(BUTTON, GPIO.IN) # pull up to high level
     # GPIO.output(RELAY_2, GPIO.HIGH)
 
     # PWM setup for buzzer
