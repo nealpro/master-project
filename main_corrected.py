@@ -19,8 +19,6 @@ TOUCH = 16 # Touch sensor to toggle system on/off
 
 touch_state = 0
 
-print(touch_state)
-
 def setup():
     global sensor
     global Buzz
@@ -53,6 +51,7 @@ def detect(state: bool):
         if state == 1:
             print("Touch switch is currently pressed.")
         touch_state = state
+        print("Touch state: ", touch_state)
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
