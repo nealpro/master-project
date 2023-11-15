@@ -111,7 +111,7 @@ def loop():
             dis1 = distance1()
             speak(f"Distance 1: {dis1:.2f} cm")
             print(f"Distance 1: {dis1} cm")
-            time.sleep(5)
+            time.sleep(10)
             dis2 = distance2()
 
             if dis2 < 400.0:
@@ -151,7 +151,7 @@ def destroy():
     GPIO.cleanup()
 
 def speak(content):
-    p = subprocess.Popen(f"espeak-ng -v mb-us1 \"{content}\"",
+    p = subprocess.Popen(f"espeak-ng -v mb-en1 \"{content}\"",
                          shell=True,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
