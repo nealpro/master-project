@@ -42,7 +42,7 @@ def setup():
     # GPIO.output(RELAY_2, GPIO.HIGH)
 
     # PWM setup for buzzer
-    Buzz = GPIO.PWM(BUZZER, 440)  # 440Hz frequency
+    Buzz = GPIO.PWM(BUZZER, 500)  # 440Hz frequency
 
 def detect(state: bool):
     global touch_state
@@ -118,7 +118,8 @@ def loop():
             print(f"Distance 2: {dis2} cm")
 
             if dis2 < 400.0:
-                Buzz.start(50.0)
+                print("Object detected at second ultrasonic sensor.")
+                Buzz.start(90.0)
             else:
                 Buzz.stop()
             time.sleep(1)
