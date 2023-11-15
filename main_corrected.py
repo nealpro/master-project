@@ -49,12 +49,15 @@ def detect(state: bool):
     if state != touch_state:
         if state == 0:
             print("Touch switch is currently released.")
+            touch_state = state
         if state == 1:
             print("Touch switch is currently pressed.")
-        touch_state = state
-        print("Touch state: ", touch_state)
-    print("Sleeping for two seconds...")
-    time.sleep(2)
+            touch_state = state
+        else:
+            raise ValueError("Touch switch is currently in an unknown state.")
+    print("Touch state: ", touch_state)
+    print("Sleeping for a quarter of a second...")
+    time.sleep(0.25)
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
@@ -96,18 +99,6 @@ def loop():
     global touch_state
     while True:
         if touch_state == 0:
-            # dis1q = queue.Queue()
-            # dis1th = threading.Thread(target=distance, args=(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO, dis1q))
-            # dis1th.start()
-            # dis1th.join()
-            # dis1 = dis1q.get() 
-
-            # dis2q = queue.Queue()
-            # dis2th = threading.Thread(target=distance, args=(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO, dis2q))
-            # dis2th.start()
-            # dis2th.join()
-            # dis2 = dis2q.get()
-
             dis1 = distance1()
             speak(f"Distance 1: {dis1:.2f} cm")
             print(f"Distance 1: {dis1} cm")
