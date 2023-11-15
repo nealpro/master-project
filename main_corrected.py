@@ -56,8 +56,8 @@ def detect(state: bool):
         else:
             raise ValueError("Touch switch is currently in an unknown state.")
     print("Touch state: ", touch_state)
-    print("Sleeping for a quarter of a second...")
-    time.sleep(0.25)
+    print("Sleeping for one second...")
+    time.sleep(1)
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
@@ -102,7 +102,6 @@ def loop():
             dis1 = distance1()
             speak(f"Distance 1: {dis1:.2f} cm")
             print(f"Distance 1: {dis1} cm")
-            time.sleep(10)
             dis2 = distance2()
 
             if dis2 < 400.0:
@@ -132,7 +131,7 @@ def loop():
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(TOUCH))
-        time.sleep(2)
+        time.sleep(2) 
 
 
 def destroy():
