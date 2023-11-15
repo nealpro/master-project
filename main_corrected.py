@@ -1,7 +1,8 @@
-import RPi.GPIO as GPIO
 import time
 import board
 import adafruit_tcs34725
+import RPi.GPIO as GPIO
+import subprocess
 # import threading
 # import queue
 
@@ -13,9 +14,9 @@ ULTRASONIC_1_ECHO = 27
 ULTRASONIC_2_TRIG = 23
 ULTRASONIC_2_ECHO = 24
 # RELAY_1 = 21 # Relay 1 is for ultrasonic 1
-RELAY_2 = 26 # Relay 2 is for RGB sensor
-BUZZER = 7 # Buzzer is for ultrasonic 2
-TOUCH = 16 # Touch sensor to toggle system on/off
+RELAY = 26 # Relay 2 is for RGB sensor
+TOUCH = 20 # Touch sensor to toggle system on/off
+BUZZER = 21 # Buzzer is for ultrasonic 2
 
 touch_state = 0
 
@@ -35,7 +36,7 @@ def setup():
     GPIO.setup(ULTRASONIC_2_TRIG, GPIO.OUT)
     GPIO.setup(ULTRASONIC_2_ECHO, GPIO.IN)
     # GPIO.setup(RELAY_1, GPIO.OUT)
-    GPIO.setup(RELAY_2, GPIO.OUT)
+    GPIO.setup(RELAY, GPIO.OUT)
     GPIO.setup(BUZZER, GPIO.OUT)
     GPIO.setup(TOUCH, GPIO.IN, pull_up_down=GPIO.PUD_UP) # pull up to high level
     # GPIO.output(RELAY_2, GPIO.HIGH)
@@ -52,6 +53,8 @@ def detect(state: bool):
             print("Touch switch is currently pressed.")
         touch_state = state
         print("Touch state: ", touch_state)
+    print("Sleeping for two seconds...")
+    time.sleep(2)
 
 def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
@@ -108,13 +111,9 @@ def loop():
             dis1 = distance1()
             print(f"Distance 1: {dis1} cm")
             
-            if dis1 < 50.0:
-                # GPIO.output(RELAY_1, GPIO.HIGH)
-                print("Relay 1 on")
-            else:
-                # GPIO.output(RELAY_1, GPIO.LOW)
-                print("Relay 1 off")
-            time.sleep(1)
+            speak(f"Distance 1: {dis1} cm")
+
+            time.sleep(5)
             dis2 = distance2()
             print(f"Distance 2: {dis2} cm")
 
@@ -127,17 +126,18 @@ def loop():
             print(f"RGB color detected: {color_rgb}")
             if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
                 print("Red detected")
-                GPIO.output(RELAY_2, GPIO.HIGH)  # Turn on vibration motor 2
+                GPIO.output(RELAY, GPIO.HIGH)  # Turn on vibration motor 2
                 print("Vibration motor 2 turned on.")
             else:
-                GPIO.output(RELAY_2, GPIO.LOW)  # Turn off vibration motor 2
+                GPIO.output(RELAY, GPIO.LOW)  # Turn off vibration motor 2
                 print("Vibration motor 2 turned off.")
             print("Program will now wait for a second.")
             time.sleep(1)
             print("Checking...")
             detect(GPIO.input(TOUCH))
         else:
-            # GPIO.output(RELAY_1, GPIO.LOW)
+            GPIO.output(RELAY, GPIO.LOW)
+            Buzz.stop()
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(TOUCH))
@@ -146,9 +146,16 @@ def loop():
 
 def destroy():
     # GPIO.output(RELAY_1, GPIO.LOW)
-    GPIO.output(RELAY_2, GPIO.LOW)
+    GPIO.output(RELAY, GPIO.LOW)
     Buzz.stop()
     GPIO.cleanup()
+
+def speak(content):
+    p = subprocess.Popen(f"espeak-ng -v mb-us1 \"{content}\"",
+                         shell=True,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    # return iter(p.stdout.readline, b'')
 
 if __name__ == '__main__':     # Program start from here
     setup()
