@@ -109,19 +109,18 @@ def loop():
             # dis2 = dis2q.get()
 
             dis1 = distance1()
+            speak(f"Distance 1: {dis1:.2f} cm")
             print(f"Distance 1: {dis1} cm")
-            
-            speak(f"Distance 1: {dis1} cm")
-
             time.sleep(5)
             dis2 = distance2()
-            print(f"Distance 2: {dis2} cm")
 
             if dis2 < 400.0:
                 print("Object detected at second ultrasonic sensor.")
                 Buzz.start(90.0)
             else:
                 Buzz.stop()
+
+            print(f"Distance 2: {dis2} cm")
             time.sleep(1)
             color_rgb = sensor.color_rgb_bytes
             print(f"RGB color detected: {color_rgb}")
