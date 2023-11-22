@@ -96,11 +96,41 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
     return during * 340 / 2 * 100
 
 def loop():
+    color_ranges = {
+        "Red": ((200, 0, 0), (255, 50, 50)),
+        "Green": ((0, 200, 0), (50, 255, 50)),
+        "Blue": ((0, 0, 200), (50, 50, 255)),
+        "Yellow": ((200, 200, 0), (255, 255, 50)),
+        "Orange": ((150, 75, 0), (255, 165, 50)),
+        "Purple": ((100, 0, 100), (200, 50, 200)),
+        "Pink": ((200, 150, 150), (255, 200, 200)),
+        "Dark Green": ((0, 100, 0), (50, 150, 50)),
+        "Navy Blue": ((0, 0, 100), (50, 50, 150)),
+        "White": ((200, 200, 200), (255, 255, 255)),
+    }
+
+    def get_color(rgb):
+        for color, (min_rgb, max_rgb) in color_ranges.items():
+            if min_rgb <= rgb <= max_rgb:
+                return color
+        return "Unknown"
+
+    color_rgb = sensor.color_rgb_bytes
+    color_name = get_color(color_rgb)
+    print(f"Detected color: {color_name}")
     global touch_state
     while True:
         if touch_state == 0:
             dis1 = distance1()
-            speak(f"Distance 1: {dis1:.2f} cm")
+            # speak(f"Distance 1: {dis1:.2f} cm")
+            if dis1 < 60.0:
+                GPIO.output(RELAY, GPIO.HIGH)  # Turn on vibration motor 2
+                print("Object detected at first ultrasonic sensor.", end=" ")
+                print("Vibration motor 2 turned on.")
+            else:
+                GPIO.output(RELAY, GPIO.LOW)
+                print("Vibration motor 2 turned off.")
+                Buzz.stop()
             print(f"Distance 1: {dis1} cm")
             dis2 = distance2()
             if dis2 < 400.0:
@@ -108,17 +138,9 @@ def loop():
                 Buzz.start(90.0)
             else:
                 Buzz.stop()
-
             print(f"Distance 2: {dis2} cm")
-            color_rgb = sensor.color_rgb_bytes
-            print(f"RGB color detected: {color_rgb}")
-            if color_rgb[0] > 100 and color_rgb[1] < 50 and color_rgb[2] < 50:
-                print("Red detected")
-                GPIO.output(RELAY, GPIO.HIGH)  # Turn on vibration motor 2
-                print("Vibration motor 2 turned on.")
-            else:
-                GPIO.output(RELAY, GPIO.LOW)  # Turn off vibration motor 2
-                print("Vibration motor 2 turned off.")
+            color = get_color(sensor.color_rgb_bytes)
+            speak(f"Detected color: {color}")
             print("Checking...")
             detect(GPIO.input(TOUCH))
         else:
