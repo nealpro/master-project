@@ -99,6 +99,7 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
 
 def loop():
     global touch_state
+    last_color = "default"
     def closest_color(requested_color):
         min_colors = {}
         for key, name in webcolors.CSS3_HEX_TO_NAMES.items():
@@ -137,7 +138,11 @@ def loop():
             color_rgb = sensor.color_rgb_bytes
             color_name = get_color_name(color_rgb)
             print(f"Detected color: {color_name}")
-            speak(color_name)
+            if color_name != last_color:
+                speak(color_name)
+                last_color = color_name
+            else:
+                print("No change in color detected.")
             time.sleep(2)
             print("Checking...")
             detect(GPIO.input(TOUCH))
