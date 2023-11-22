@@ -142,6 +142,7 @@ def loop():
             print(f"Distance 2: {dis2} cm")
             color = get_color(sensor.color_rgb_bytes)
             speak(color)
+            time.sleep(2)
             print("Checking...")
             detect(GPIO.input(TOUCH))
         else:
