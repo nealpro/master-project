@@ -3,6 +3,7 @@ import board
 import adafruit_tcs34725
 import RPi.GPIO as GPIO
 import subprocess
+import webcolors
 # import threading
 # import queue
 
@@ -97,29 +98,22 @@ def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
     return during * 340 / 2 * 100
 
 def loop():
-    color_ranges = {
-        "Red": ((200, 0, 0), (255, 50, 50)),
-        "Green": ((0, 200, 0), (50, 255, 50)),
-        "Blue": ((0, 0, 200), (50, 50, 255)),
-        "Yellow": ((200, 200, 0), (255, 255, 50)),
-        "Orange": ((150, 75, 0), (255, 165, 50)),
-        "Purple": ((100, 0, 100), (200, 50, 200)),
-        "Pink": ((200, 150, 150), (255, 200, 200)),
-        "Dark Green": ((0, 100, 0), (50, 150, 50)),
-        "Navy Blue": ((0, 0, 100), (50, 50, 150)),
-        "White": ((200, 200, 200), (255, 255, 255)),
-    }
-
-    def get_color(rgb):
-        for color, (min_rgb, max_rgb) in color_ranges.items():
-            if min_rgb <= rgb <= max_rgb:
-                return color
-        return "Unknown"
-
-    color_rgb = sensor.color_rgb_bytes
-    color_name = get_color(color_rgb)
-    print(f"Detected color: {color_name}")
     global touch_state
+    def closest_color(requested_color):
+        min_colors = {}
+        for key, name in webcolors.CSS3_HEX_TO_NAMES.items():
+            r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+            rd = (r_c - requested_color[0]) ** 2
+            gd = (g_c - requested_color[1]) ** 2
+            bd = (b_c - requested_color[2]) ** 2
+            min_colors[(rd + gd + bd)] = name
+        return min_colors[min(min_colors.keys())]
+
+    def get_color_name(rgb_color):
+        try:
+            return webcolors.rgb_to_name(rgb_color)
+        except ValueError:
+            return closest_color(rgb_color)
     while True:
         if touch_state == 0:
             dis1 = distance1()
@@ -140,8 +134,10 @@ def loop():
             else:
                 Buzz.stop()
             print(f"Distance 2: {dis2} cm")
-            color = get_color(sensor.color_rgb_bytes)
-            speak(color)
+            color_rgb = sensor.color_rgb_bytes
+            color_name = get_color_name(color_rgb)
+            print(f"Detected color: {color_name}")
+            speak(color_name)
             time.sleep(2)
             print("Checking...")
             detect(GPIO.input(TOUCH))
