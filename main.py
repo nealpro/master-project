@@ -54,7 +54,8 @@ def detect(state: bool):
             print("Touch switch is currently pressed.")
             touch_state = state
         else:
-            raise ValueError("Touch switch is currently in an unknown state.")
+            touch_state = 0
+            print("Touch switch is currently released. (Default) 🤡")
     print("Touch state: ", touch_state)
     print("Sleeping for a quarter of a second...")
     time.sleep(0.25)
