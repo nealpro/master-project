@@ -149,7 +149,7 @@ def loop():
             print("System turned off.")
             print("Checking...")
             detect(GPIO.input(TOUCH))
-        time.sleep(2)
+        time.sleep(0.25)
 
 
 def reboot():
