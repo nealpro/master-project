@@ -1,11 +1,11 @@
-import main_corrected
+import main
 
 def test_loop():
     # Simulate button press
-    main_corrected.touch_state = True
+    main.touch_state = True
 
     # Call loop function and check that it does not exit without an exception
     try:
-        main_corrected.loop()
+        main.loop()
     except:
         assert False, "loop function exited with an exception"
