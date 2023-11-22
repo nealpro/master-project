@@ -138,11 +138,12 @@ def loop():
             color_rgb = sensor.color_rgb_bytes
             color_name = get_color_name(color_rgb)
             print(f"Detected color: {color_name}")
-            if color_name != last_color:
+            print(f"Last color: {last_color}")
+            if color_name == last_color:
+                print("No change in color detected.")
+            else:
                 speak(color_name)
                 last_color = color_name
-            else:
-                print("No change in color detected.")
             time.sleep(2)
             print("Checking...")
             detect(GPIO.input(TOUCH))
