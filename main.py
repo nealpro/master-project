@@ -114,7 +114,7 @@ def loop():
         for color, (min_rgb, max_rgb) in color_ranges.items():
             if min_rgb <= rgb <= max_rgb:
                 return color
-        return "Unknown color!"
+        return "Unknown"
 
     color_rgb = sensor.color_rgb_bytes
     color_name = get_color(color_rgb)
@@ -141,7 +141,7 @@ def loop():
                 Buzz.stop()
             print(f"Distance 2: {dis2} cm")
             color = get_color(sensor.color_rgb_bytes)
-            speak(f"Detected color: {color}")
+            speak(color)
             print("Checking...")
             detect(GPIO.input(TOUCH))
         else:
