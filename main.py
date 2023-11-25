@@ -61,7 +61,7 @@ def detect(state: bool):
     print("Sleeping for a quarter of a second...")
     time.sleep(0.25)
 
-def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
+def distance_ultrasonic_1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     GPIO.output(TRIG, 0)
     time.sleep(0.000002)
 
@@ -79,7 +79,7 @@ def distance1(TRIG = ULTRASONIC_1_TRIG, ECHO = ULTRASONIC_1_ECHO):
     during = time2 - time1
     return during * 340 / 2 * 100
 
-def distance2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
+def distance_ultrasonic_2(TRIG = ULTRASONIC_2_TRIG, ECHO = ULTRASONIC_2_ECHO):
     GPIO.output(TRIG, 0)
     time.sleep(0.000002)
 
@@ -117,7 +117,7 @@ def loop():
             return closest_color(rgb_color)
     while True:
         if touch_state == 0:
-            dis1 = distance1()
+            dis1 = distance_ultrasonic_1()
             # speak(f"Distance 1: {dis1:.2f} cm")
             if dis1 < 60.0:
                 GPIO.output(RELAY, GPIO.HIGH)  # Turn on vibration motor 2
@@ -128,7 +128,7 @@ def loop():
                 print("Vibration motor 2 turned off.")
                 Buzz.stop()
             print(f"Distance 1: {dis1} cm")
-            dis2 = distance2()
+            dis2 = distance_ultrasonic_2()
             if dis2 < 400.0:
                 print("Object detected at second ultrasonic sensor.")
                 Buzz.start(90.0)
